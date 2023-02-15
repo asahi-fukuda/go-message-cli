@@ -1,23 +1,28 @@
 package main
 
 import (
+	"fmt"
 	"os"
+	"time"
 
 	infra "go-message-cli/infra/localfile"
+	"go-message-cli/model"
+	"go-message-cli/repository"
 )
 
 func main() {
-	f := infra.MessageRepository{FilePath: "tmp/message.txt"}
+	var f repository.MessageRepository = &infra.MessageRepository{FilePath: "tmp/message.txt"}
 
 	args := os.Args[1]
 
-	if args == "new" {
+	switch args {
+	case "new":
 		name := os.Args[2]
 		message := os.Args[3]
-		f.Save(name, message)
-	}
-
-	if args == "list" {
+		f.Save(model.Message{Name: name, Message: message, Time: time.Now()})
+	case "list":
 		f.List()
+	default:
+		fmt.Println("Command Not Found")
 	}
 }
