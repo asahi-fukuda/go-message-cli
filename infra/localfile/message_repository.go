@@ -31,7 +31,7 @@ func (m *MessageRepository) Save(msg *model.Message) error {
 }
 
 // 読み込み
-func (m *MessageRepository) List() (*[]model.Message, error) {
+func (m *MessageRepository) List() ([]*model.Message, error) {
 	const BUFFERSIZE = 255
 
 	f, err := os.Open(m.FilePath)
