@@ -19,7 +19,7 @@ func main() {
 	case "new":
 		name := os.Args[2]
 		message := os.Args[3]
-		f.Save(model.Message{Name: name, Message: message, Time: time.Now()})
+		f.Save(&model.Message{Name: name, Message: message, Time: time.Now()})
 	case "list":
 		f.List()
 	default:

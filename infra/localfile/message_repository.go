@@ -12,7 +12,7 @@ type MessageRepository struct {
 }
 
 // 書き込み
-func (m *MessageRepository) Save(msg model.Message) error {
+func (m *MessageRepository) Save(msg *model.Message) error {
 	f, err := os.OpenFile(m.FilePath, os.O_RDWR|os.O_APPEND, 0644)
 	if err != nil {
 		fmt.Println(err)
@@ -21,7 +21,7 @@ func (m *MessageRepository) Save(msg model.Message) error {
 
 	defer f.Close()
 
-	_, err = fmt.Fprintln(f, msg)
+	_, err = fmt.Fprintln(f, *msg)
 	if err != nil {
 		fmt.Println(err)
 		return err
