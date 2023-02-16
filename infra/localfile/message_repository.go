@@ -1,6 +1,7 @@
 package infra
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
@@ -21,7 +22,13 @@ func (m *MessageRepository) Save(msg *model.Message) error {
 
 	defer f.Close()
 
-	_, err = fmt.Fprintln(f, *msg)
+	j, err := json.Marshal(&msg)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	_, err = fmt.Fprint(f, string(j))
 	if err != nil {
 		fmt.Println(err)
 		return err
@@ -32,28 +39,23 @@ func (m *MessageRepository) Save(msg *model.Message) error {
 
 // 読み込み
 func (m *MessageRepository) List() ([]*model.Message, error) {
-	const BUFFERSIZE = 255
-
 	f, err := os.Open(m.FilePath)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	defer f.Close()
 
-	b := make([]byte, BUFFERSIZE)
-	for {
-		n, err := f.Read(b)
-		if n == 0 {
-			break
-		}
+	var msg []*model.Message
+	decoder := json.NewDecoder(f)
+
+	for decoder.More() {
+		var message model.Message
+		err = decoder.Decode(&message)
 		if err != nil {
-			fmt.Println(err)
 			return nil, err
 		}
+		msg = append(msg, &message)
 	}
 
-	fmt.Println(string(b))
-
-	return nil, err
+	return msg, err
 }

@@ -21,7 +21,14 @@ func main() {
 		message := os.Args[3]
 		f.Save(&model.Message{Name: name, Message: message, Time: time.Now()})
 	case "list":
-		f.List()
+		messages, err := f.List()
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		for _, message := range messages {
+			fmt.Println(message.Name, message.Message, message.Time)
+		}
 	default:
 		fmt.Println("Command Not Found")
 	}
